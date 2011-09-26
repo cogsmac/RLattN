@@ -26,23 +26,7 @@ incorrectDecisionReward = params(5);
 gamma = params(6);
 %}
 
-
-%alp = params(1)/5;
-%{
-accessCost = ceil(-(11)*params(2));
-novelInformationBonus = floor((11)*params(3));
-correctDecisionReward = floor((21)*(4));
-incorrectDecisionReward = ceil(-(21)*params(5));
-
-
-accessCost = ceil(-(101)*params(2));
-novelInformationBonus = floor((101)*params(3));
-correctDecisionReward = floor((201)*(4));
-incorrectDecisionReward = ceil(-(201)*params(5));
-
-%}
-%gamma = params(6);
-
+%%
 alp = params(1);
 reward = params(2)*201;
 accessCost = -(reward/(params(3)*101));
@@ -51,8 +35,18 @@ correctDecisionReward = reward;
 incorrectDecisionReward = -reward;
 gamma = params(4);
 temp = 0.5; %0.7 fixes number 4
+%%
+
+%% These are the branches we need to bring in
+correctiveFeedback = 0;
+eyestract = 0;
+eligibilityTraces = 0;
+
+%%
 
 
+errQdiff = [];
+corrQdiff = [];
 block = 1;
 
 
@@ -63,15 +57,17 @@ featureMax = experimentStruc.featureMax; %needed to determine when a feature fix
 categoryMax = experimentStruc.categoryMax;
 dataDisplayOn = 0; %toggles the GUI for visualizing the processing
 expAcc = []; %this logs accuracy on each trial.
-
-
 stimuli = experimentStruc.stimuli; %preset inside category structure
 response = experimentStruc.response;
 states = fullfact(repmat(3,1,featureMax));
 
-
 Q = zeros(stateMax, actionMax);
 V = zeros(stateMax + categoryMax, 1);
+
+if eligibilityTraces == 1
+    eq = zeros(stateMax, actionMax);
+    ev = zeros(stateMax + categoryMax, 1);
+end
 
 %actProbStores = {}
 
@@ -196,9 +192,24 @@ for blockTrial = 1:length(stimuli)
             tdError = gamma*V(currentState) + reinforcement - V(previousState) ;
             V(previousState) = V(previousState) + alp*(tdError)         ;
             Q(previousState,action) = Q(previousState,action) + alp*(tdError);
-         
             
-            
+            %Jordan testing eligibility traces
+            if eligibilityTraces == 1
+                eq(previousState,action) = eq(previousState,action) + 1; %Sutton 7.6 indicates this is the right state...
+                ev(previousState) = ev(previousState) + 1;
+                for i = 1:length(states)
+                    for n = 1:actionMax
+                        Q(i,n) = Q(i,n) + (tdError*eq(i,n)); %wtf is alpha in this equation? referring to the book...
+                        if n == action
+                            eq(i,n) = gamma*alp*eq(i,n);
+                        else
+                            eq(i,n) = 0;
+                        end
+                    end
+                    V(i) = V(i) + (tdError*ev(i));
+                end
+            end
+
             
             if dataDisplayOn == 1
                 DataDisplay(knownStimulusValues,Q,V,currentState,block,blockTrial);
@@ -236,6 +247,36 @@ for blockTrial = 1:length(stimuli)
             V(previousState) = V(previousState) + gamma*(tdError)   ;
             Q(previousState,action) = Q(previousState,action) + alp*(tdError) ;
             
+            
+            
+            %Jordan testing eligibility traces
+            if eligibilityTraces == 1
+                eq(previousState,action) = eq(previousState,action) + 1; %Sutton 7.6 indicates this is the right state...
+                ev(previousState) = ev(previousState) + 1;
+                for i = 1:length(states)
+                    for n = 1:actionMax
+                        Q(i,n) = Q(i,n) + (tdError*eq(i,n)); %wtf is alpha in this equation? referring to the book...
+                        if n == action
+                            e(i,n) = gamma*alp*eq(i,n);
+                        else
+                            e(i,n) = 0;
+                        end
+                    end
+                    V(i) = V(i) + (tdError*ev(i));
+                end
+            end
+
+            
+            %Jordan playing with Paul's suggestion 1.
+            if blockTrial ~= 1
+                if trialAccuracy == 0              
+                    errQdiff = [errQdiff;Q(:,1:3) - oldQ(:,1:3)];
+                else
+                    corrQdiff = [corrQdiff;Q(:,1:3) - oldQ(:,1:3)];
+                end
+            end
+            
+            oldQ = Q;            
             
             
             

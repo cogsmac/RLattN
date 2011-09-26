@@ -53,13 +53,6 @@ gamma = params(4);
 temp = 0.5; %0.7 fixes number 4
 
 
-
-
-%jb testing
-errQdiff = [];
-corrQdiff = [];
-
-
 block = 1;
 
 
@@ -79,8 +72,6 @@ states = fullfact(repmat(3,1,featureMax));
 
 Q = zeros(stateMax, actionMax);
 V = zeros(stateMax + categoryMax, 1);
-eq = zeros(stateMax, actionMax);
-ev = zeros(stateMax + categoryMax, 1);
 
 %actProbStores = {}
 
@@ -205,21 +196,7 @@ for blockTrial = 1:length(stimuli)
             tdError = gamma*V(currentState) + reinforcement - V(previousState) ;
             V(previousState) = V(previousState) + alp*(tdError)         ;
             Q(previousState,action) = Q(previousState,action) + alp*(tdError);
-            
-            %Jordan testing eligibility traces
-            eq(previousState,action) = eq(previousState,action) + 1; %Sutton 7.6 indicates this is the right state...
-            ev(previousState) = ev(previousState) + 1;
-            for i = 1:length(states)
-                for n = 1:actionMax
-                    Q(i,n) = Q(i,n) + (tdError*eq(i,n)); %wtf is alpha in this equation? referring to the book...
-                    if n == action
-                        eq(i,n) = gamma*alp*eq(i,n);
-                    else
-                        eq(i,n) = 0;
-                    end
-                end
-                V(i) = V(i) + (tdError*ev(i));
-            end
+         
             
             
             
@@ -259,34 +236,6 @@ for blockTrial = 1:length(stimuli)
             V(previousState) = V(previousState) + gamma*(tdError)   ;
             Q(previousState,action) = Q(previousState,action) + alp*(tdError) ;
             
-            
-            
-            %Jordan testing eligibility traces
-            eq(previousState,action) = eq(previousState,action) + 1; %Sutton 7.6 indicates this is the right state...
-            ev(previousState) = ev(previousState) + 1;
-            for i = 1:length(states)
-                for n = 1:actionMax
-                    Q(i,n) = Q(i,n) + (tdError*eq(i,n)); %wtf is alpha in this equation? referring to the book...
-                    if n == action
-                        e(i,n) = gamma*alp*eq(i,n);
-                    else
-                        e(i,n) = 0;
-                    end
-                end
-                V(i) = V(i) + (tdError*ev(i));
-            end
-
-            
-            %Jordan playing with Paul's suggestion 1.
-            if blockTrial ~= 1
-                if trialAccuracy == 0              
-                    errQdiff = [errQdiff;Q(:,1:3) - oldQ(:,1:3)];
-                else
-                    corrQdiff = [corrQdiff;Q(:,1:3) - oldQ(:,1:3)];
-                end
-            end
-            
-            oldQ = Q;            
             
             
             

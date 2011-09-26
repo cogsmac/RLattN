@@ -244,9 +244,42 @@ for blockTrial = 1:length(stimuli)
             %Calculate TD error and apply it to Q and V matrices
             
             tdError = gamma*V(currentState) + reinforcement - V(previousState)    ;
-            V(previousState) = V(previousState) + gamma*(tdError)   ;
+
             Q(previousState,action) = Q(previousState,action) + alp*(tdError) ;
             
+            
+            %% CorrectiveBlock - JB, Aug 18, 2011
+            if correctiveFeedback == 1
+                actionVec = [featureMax+1:1:actionMax];
+                suppProp = params(3);
+                if trialAccuracy == 1
+                    suppReward = reward/suppProp; 
+                    supptdError = V(currentState) + suppReward - V(previousState);
+
+                    for corrIter = 1:categoryMax
+                        if actionVec(corrIter) ~= action
+                            Q(previousState,actionVec(corrIter)) = Q(previousState,actionVec(corrIter)) + alp*(supptdError);
+                        end
+                    end
+
+                else
+                    suppReward = reward/suppProp;
+                    suppNegReward = -reward/suppProp;
+                    supptdError = V(currentState) + suppReward - V(previousState);
+                    suppNegtdError = V(currentState) + suppNegReward - V(previousState);
+                    feedbackAction = featureMax + response(blockTrial);
+                    Q(previousState,feedbackAction) = Q(previousState,feedbackAction) + alp*(supptdError) ;    
+                    for corrIter = 1:categoryMax
+                        if (actionVec(corrIter) ~= action) && (actionVec(corrIter) ~= feedbackAction)
+                            Q(previousState,actionVec(corrIter)) = Q(previousState,actionVec(corrIter)) + alp*(suppNegtdError) ;
+                        end
+                    end                            
+                end
+            end    
+            %%
+            
+            
+            V(previousState) = V(previousState) + gamma*(tdError)   ;            
             
             
             %Jordan testing eligibility traces

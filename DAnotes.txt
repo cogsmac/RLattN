@@ -1,0 +1,28 @@
+Citations/Notes for the modeling paper
+
+Dopamine has been proposed as the neurotransmitter that is most active in reinforcement learning (Schultz, 1998). Combined methodologies converge on dopamine projections to both the striatum and frontal cortex as the neural intermediaries for learning and approach behaviour (CITATIONS FROM SCHULTZ: Beninger & Hahn, 1983; Di Chiara 1995; Fibiger & Phillips, 1986; Robbins & Everitt, 1992; Wise et al., 1978 FIND NEWER MORE SPECIFIC SOURCES).
+
+The somas of dopaminergic neurons are largely localized to the substantia nigra and ventral tegmental area (Schultz, 1999; 2002). The axons of these cells project to the striatum (specifically the caudate nucleus and putamen) (Schultz, 2002), the ventral striatum (nucleus accumbens; Shultz, 2002) and the prefrontal cortex  where the neurotransmitter is released. These neurons are activited by various stimuli, but in a specific context. Dopaminergic neurons are particularly active following the presentation of unexpected, appetitive stimuli. One instance where this activity is observed is when the reward response occurs outside of the learning context [NOTE: Could this be an argument to make as a possible biological basis for "correct driven" systems?] (CITATIONS FROM SCHULTZ: Hollerman & Schultz, 1996; Ljungberg et al, 1991, 1992; Mirenowicz & Schultz, 1994; Shultz et al., 1993). Further, dopamine release corresponds to the learning phase, whereas an absent dopamine response corresponds to full knowledge of the task or environment. The time interval of reward presentation mediates how quickly the dopamine response ceases. If the reward is presented on a ratio (?? - CHECK THE TERMINOLOGY FOR REINFORCEMENT SCHEDULES) scale, the dopaminergic response to reward will be elicited for more trials than if the reinforcement was to be presented on an interval scale (?? - TERMINOLOGY). 
+
+If the reward is presented to the learner at a fixed interval, then a supression of the dopamine response is noted after full acquisition when the reward is not presented at the expected time (Hollerman & Schultz, 1996; Ljungberg et al., 1991; Schultz et al., 1993). 
+
+Aversive stimuli also elicit activation of dopaminergic neurons, but this is typically slower (Romo & Schultz, 1990; Mirenowicz & Shultz, 1996; Schultz & Romo, 1987; Abercrombie et al., 1989; Doherty & Gratton, 1992; Louilot et al., 1986; Young et al., 1993). NEED MORE INFO FOR AVERSIVE "REWARD"
+
+Temporal difference learning is congruent with our knowledge of the neurological basis of reinforcement learning, partially due to its seperated actor and critic. There is widespread connectivity from dopaminergic cells in the substantia nigra to the striatum, and to a lesser extent the frontal cortex. These pathways are consistent with a temporal difference reinforcement signal originating with the critic and influencing the actor (HOW? SCHULTZ KNOWS BUT I DON'T - pg 14). 
+
+
+Serotonin:
+- Some points in Schultz review
+- "long term average reward rate" (via Alexander; Daw, Kakade, & Dayan, 2002); 
+- "temporal discount factor" (Doya, 2002)
+
+Acetylcholine & Noradrenaline
+- working memory & attention (Aston-Jones, Rajkowski, Kubiak, & Alexinsky, 1994; Chernyshev, Panasyuk, Semikopnaya & Timofeeva, 2004; Gill, Sarter & Givens, 2000; Sara, Vankov & Herve, 1994)
+- learning rate (ACh) & inverse temperature parameters (NA) (Doya, 2002)
+- uncertainty (expected - ACh; unexpected - NA) (Yu & Dayan, 2005)
+
+From Holroyd & Coles, 2002:
+"Several groups of investigators (Barto, 1995; Friston, Tononi,
+Reeke, Sporns, & Edelman, 1994; Houk, Adams, & Barto, 1995; Montague, Dayan, & Sejnowski, 1996; Schultz, Dayan, & Mon- tague, 1997; Suri & Schultz, 1998; cf. J. Brown, Bullock, & Grossberg, 1999) have noted similarities between the phasic ac- tivity of the mesencephalic dopamine system and a particular error signal, called a temporal difference error (TD error), associated with a reinforcement learning algorithm called the method of temporal differences (Sutton, 1988; for reviews, see Barto, 1995; Sutton & Barto, 1998)."
+
+Holroyd & Coles: The supposition that the dopamine system carries a TD error is supported by the fact that TD errors propogate back from the reward presentation, and that the negative TD error comes in the absense of reward presentation when a reward was expected (2002).
